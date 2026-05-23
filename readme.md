@@ -77,7 +77,7 @@ W tym pliku definiowane są globalne parametry uruchomienia:
 }
 ```
 
-### Definicje Środowiska (`data/02.json`)
+### Definicje Środowiska
 
 Pliki JSON w folderze `data/` definiują strukturę nagród dla wielorękiego bandyty:
 
