@@ -8,12 +8,20 @@ from algorithms.ucb import UCB
 from algorithms.thompson import Thompson
 from algorithms.algorithm import Algorithm
 
+import argparse
 
 def main():
+    parser = argparse.ArgumentParser(description="Symulator N armed bandit")
+    parser.add_argument("-f", "--file", help="Plik, z którego wczytywane są statystyki automatów")
+    args = parser.parse_args()
+
+    if not args.file:
+        raise ValueError("Nie podano pliku")
+
     with open("settings.json", "r") as file:
         data = json.load(file)
 
-    with open("data/02.json", "r") as file:
+    with open(f"data/{args.file}", "r") as file:
         statistics = json.load(file)
 
     EPSILON, GAMES = data["epsilon"], data["games"]

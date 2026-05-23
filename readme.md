@@ -92,7 +92,7 @@ Pliki JSON w folderze `data/` definiują strukturę nagród dla wielorękiego ba
 Aby uruchomić symulację i porównać algorytmy, wykonaj polecenie:
 
 ```bash
-python main.py
+python main.py -f 01.json
 ```
 
 ### Oczekiwany Wynik w Konsoli
