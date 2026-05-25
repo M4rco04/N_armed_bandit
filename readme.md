@@ -1,113 +1,122 @@
-# Symulator Problemu Wielorękiego Bandyty (Multi-Armed Bandit)
+# Multi-Armed Bandit Problem Simulator
 
-Projekt stanowi implementację i środowisko testowe dla klasycznego problemu **Wielorękiego Bandyty (Multi-Armed Bandit)** w uczeniu ze wzmocnieniem (Reinforcement Learning). Aplikacja umożliwia symulację oraz porównanie efektywności trzech popularnych algorytmów decyzyjnych w stacjonarnym środowisku o rozkładzie normalnym (Gaussa).
+This project is an implementation and testing environment for the classic **Multi-Armed Bandit** problem in Reinforcement Learning. The application allows for the simulation and efficiency comparison of three popular decision-making algorithms in a stationary environment with a normal (Gaussian) distribution.
 
-Głównym celem programu jest optymalizacja wyboru ramion bandyty w celu maksymalizacji skumulowanej nagrody oraz minimalizacji tzw. żalu (**Regret**), czyli straty wynikającej z niewybrania optymalnego ramienia w każdym kroku.
+The main goal of the program is to optimize the selection of the bandit's arms to maximize the cumulative reward and minimize the so-called **Regret**, which is the loss resulting from not choosing the optimal arm at each step.
 
 ---
 
-## 🧠 Zaimplementowane Algorytmy
+## 🧠 Implemented Algorithms
 
-Projekt implementuje trzy fundamentalne podejścia do balansu pomiędzy eksploracją (Exploration) a eksploatacją (Exploitation):
+The project implements three fundamental approaches to balancing Exploration and Exploitation:
 
 1. **Epsilon-Greedy (ε-Greedy)**:
-   - Wybiera najlepsze znane ramię z prawdopodobieństwem `1 - ε`.
-   - Z prawdopodobieństwem `ε` dokonuje losowej eksploracji środowiska.
-   - Wartość `ε` jest konfigurowalna z poziomu plików ustawień.
+* Chooses the best-known arm with a probability of `1 - ε`.
+* With a probability of `ε`, it performs random exploration of the environment.
+* The `ε` value is configurable from the settings files.
+
 
 2. **UCB (Upper Confidence Bound)**:
-   - Realizuje zasadę *„optymizmu w obliczu niepewności”*.
-   - Wybiera ramię na podstawie średniej dotychczasowej nagrody powiększonej o przedział ufności.
-   - Automatycznie zmniejsza priorytet eksploracji dla ramion, które były już wielokrotnie sprawdzane.
+* Implements the principle of *"optimism in the face of uncertainty"*.
+* Selects an arm based on the average reward received so far, plus a confidence interval.
+* Automatically reduces the exploration priority for arms that have already been checked multiple times.
 
-3. **Próbkowanie Thompsona (Thompson Sampling)**:
-   - Podejście bayesowskie wykorzystujące próbkowanie z rozkładu a posteriori.
-   - Ze względu na ciągły, gaussowski charakter nagród, algorytm wykorzystuje koniugację rozkładów **Normal-Inverse-Gamma (NIG)**.
-   - Dynamicznie aktualizuje hiperparametry (`μ`, `ν`, `α`, `β`) na podstawie obserwowanych nagród.
+
+3. **Thompson Sampling**:
+* A Bayesian approach utilizing sampling from the posterior distribution.
+* Due to the continuous, Gaussian nature of the rewards, the algorithm uses the conjugate prior of the **Normal-Inverse-Gamma (NIG)** distribution.
+* Dynamically updates hyperparameters (`μ`, `ν`, `α`, `β`) based on observed rewards.
+
+
 
 ---
 
-## 📁 Struktura Projektu
+## 📁 Project Structure
 
-Projekt został zaprojektowany w sposób modułowy, z wyraźnym odseparowaniem logiki środowiska od algorytmów:
+The project is designed in a modular way, with a clear separation of the environment logic from the algorithms:
 
 ```text
 ├── bandit/
-│   └── bandit.py          # Definicja środowiska (ramiona, średnie, odchylenia standardowe, losowanie nagród)
+│   └── bandit.py          # Environment definition (arms, means, standard deviations, reward sampling)
 ├── algorithms/
-│   ├── algorithm.py       # Abstrakcyjna klasa bazowa dla algorytmów
-│   ├── e_greedy.py        # Implementacja algorytmu Epsilon-Greedy
-│   ├── ucb.py             # Implementacja algorytmu UCB
-│   └── thompson.py        # Implementacja Próbkowania Thompsona z aktualizacją NIG
+│   ├── algorithm.py       # Abstract base class for algorithms
+│   ├── e_greedy.py        # Epsilon-Greedy algorithm implementation
+│   ├── ucb.py             # UCB algorithm implementation
+│   └── thompson.py        # Thompson Sampling implementation with NIG update
 ├── data/
-│   ├── 01.json            # Konfiguracja środowiska testowego nr 1 (4 ramiona)
-│   └── 02.json            # Konfiguracja środowiska testowego nr 2 (9 ramion)
-├── settings.json          # Globalne ustawienia symulacji (liczba gier, wartość epsilon)
-└── main.py                # Główny skrypt uruchomieniowy i wizualizacja wyników
+│   ├── 01.json            # Test environment configuration #1 (4 arms)
+│   └── 02.json            # Test environment configuration #2 (9 arms)
+├── settings.json          # Global simulation settings (number of games, epsilon value)
+└── main.py                # Main runner script and results visualization
+
 ```
 
 ---
 
-## 🛠️ Wymagania i Instalacja
+## 🛠️ Requirements and Installation
 
-Program wymaga środowiska Python 3.8 lub nowszego oraz zainstalowanych bibliotek numerycznych i graficznych.
+The program requires Python 3.8 or newer and the installation of numerical and graphical libraries.
 
-1. Sklonuj repozytorium lub pobierz pliki projektu.
-2. Zainstaluj wymagane pakiety za pomocą menedżera `pip`:
+1. Clone the repository or download the project files.
+2. Install the required packages using the `pip` package manager:
 
 ```bash
 pip install numpy matplotlib
+
 ```
 
 ---
 
-## ⚙️ Konfiguracja Symulacji
+## ⚙️ Simulation Configuration
 
-### Ustawienia ogólne (`settings.json`)
+### General Settings (`settings.json`)
 
-W tym pliku definiowane są globalne parametry uruchomienia:
+Global launch parameters are defined in this file:
 
-- `epsilon`: współczynnik eksploracji dla algorytmu `ε-Greedy`.
-- `games`: łączna liczba rund (iteracji/pociągnięć za ramię), z których składa się jedna symulacja.
+* `epsilon`: exploration coefficient for the `ε-Greedy` algorithm.
+* `games`: total number of rounds (iterations/arm pulls) that make up one simulation.
 
 ```json
 {
     "epsilon": 0.1,
     "games": 500
 }
+
 ```
 
-### Definicje Środowiska
+### Environment Definitions
 
-Pliki JSON w folderze `data/` definiują strukturę nagród dla wielorękiego bandyty:
+JSON files in the `data/` folder define the reward structure for the multi-armed bandit:
 
-- `arms`: liczba dostępnych ramion.
-- `mean`: oczekiwana średnia wartość nagrody dla każdego ramienia.
-- `std`: odchylenie standardowe nagrody (szum gaussowski) dla każdego ramienia.
+* `arms`: number of available arms.
+* `mean`: expected mean reward value for each arm.
+* `std`: standard deviation of the reward (Gaussian noise) for each arm.
 
 ---
 
-## 🚀 Uruchomienie Programu
+## 🚀 Running the Program
 
-Aby uruchomić symulację i porównać algorytmy, wykonaj polecenie:
+To run the simulation and compare the algorithms, execute the command:
 
 ```bash
 python main.py -f 01.json
+
 ```
 
-### Oczekiwany Wynik w Konsoli
+### Expected Console Output
 
-Po zakończeniu symulacji program wypisze w terminalu podsumowanie zdobytych nagród oraz wynik teoretycznego „jasnowidza” (wybierającego wyłącznie najlepsze ramię przez całą grę):
+Upon completion of the simulation, the program will print a summary of the obtained rewards in the terminal, as well as the result of a theoretical "clairvoyant" (choosing exclusively the best arm throughout the game):
 
 ```text
-Nagrody zdobyte przez algorytm epsilon Greedy: 524.321948210342
-Nagrody zdobyte przez algorytm UCB: 612.871239847102
-Nagrody zdobyte przez próbkowanie Thompsona: 634.192048123951
-Nagroda przy jasnowidzeniu: 650.0
+Rewards obtained by epsilon Greedy algorithm: 524.321948210342
+Rewards obtained by UCB algorithm: 612.871239847102
+Rewards obtained by Thompson sampling: 634.192048123951
+Reward for clairvoyance: 650.0
+
 ```
 
-### Wizualizacja Wyników
+### Results Visualization
 
-Program automatycznie wygeneruje i wyświetli wykres przedstawiający **skumulowany żal (Total Regret)** dla każdego z algorytmów w czasie.
+The program will automatically generate and display a chart showing the **Total Regret** for each algorithm over time.
 
-- *Im bardziej płaski wykres (mniejsze nachylenie w późniejszych fazach), tym szybciej algorytm zidentyfikował optymalne ramię i przestał marnować próby na gorsze opcje.*
+* *The flatter the chart (lower slope in later phases), the faster the algorithm identified the optimal arm and stopped wasting trials on worse options.*
